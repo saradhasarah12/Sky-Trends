@@ -15,7 +15,7 @@ mongoose.connect(mongoDburl)
     console.log(e);
 })
 
-app.listen(3001,()=> console.log("Server Started"));
+app.listen(5000,()=> console.log("Server Started"));
 
 const userRoutes=require('./Routes/User_Routes');
 

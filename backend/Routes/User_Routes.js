@@ -4,3 +4,5 @@ const { UserLogin, UserSignUp }=require("../Controllers/User_Controller")
 
 router.post('/login',UserLogin);
 router.post('/signup',UserSignUp);
+
+module.exports=router;
