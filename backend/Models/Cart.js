@@ -15,6 +15,6 @@ const CartDetailSchema =new mongoose.Schema({
       totalAmount: {
         type: Number,
       }
-},{collation:"CartInfo",});
+},{collection:"CartInfo",});
 const Cart=mongoose.model("CartInfo",CartDetailSchema);
 model.export= Cart;

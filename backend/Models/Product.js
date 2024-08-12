@@ -29,4 +29,5 @@ const ProductDetailSchema = new mongoose.Schema({
     rating:[{type:String}]
 },{collection:"productInfo",});
 const Product =  mongoose.model("ProductInfo",ProductDetailSchema);
-model.export=Product;
+module.exports=Product;
+
