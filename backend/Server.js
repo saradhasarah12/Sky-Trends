@@ -1,9 +1,10 @@
 const express =require("express")
-const mongoose=require("mongoose")
-const cors=require("cors")
-
-const app=express()
+const app = express();
 app.use(express.json())
+
+const mongoose=require("mongoose")
+
+const cors=require("cors")
 app.use(cors()); 
 
 const mongoDburl="mongodb://localhost:27017/SkyTrends"

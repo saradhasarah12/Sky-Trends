@@ -5,6 +5,7 @@ const CartDetailSchema =new mongoose.Schema({
         ref: 'User',
         required: true
       },
+      
       products: [{
         productId: {
           type: mongoose.Schema.Types.ObjectId,
@@ -15,6 +16,9 @@ const CartDetailSchema =new mongoose.Schema({
       totalAmount: {
         type: Number,
       }
-},{collation:"CartInfo",});
+
+},{collection:"CartInfo",
+
+});
 const Cart=mongoose.model("CartInfo",CartDetailSchema);
 model.export= Cart;
