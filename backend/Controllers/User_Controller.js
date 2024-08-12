@@ -9,14 +9,17 @@ module.exports.UserLogin= async(req,res)=>{
     try{
         let user=null;
         let role=null;
+
         user=await User.findOne({ $or : [{email:uname},{phone:uname}]});
         if(!user){
             return res.json({error:"User Not Found"})
         }
+
         const valid=await bcrypt.compare(password,user.password);
         if(valid){
             return res.json({status:"ok",role:user.role,email:user.email})
         }
+        
         else{
             return res.json({status:"error",error:"Invalid Password"})
         }
@@ -29,8 +32,8 @@ module.exports.UserLogin= async(req,res)=>{
 
 //User Register
 module.exports.UserSignUp=async(req,res)=>{
-    var {email,phone,password}=req.body;
-    const role="user";
+    var {email,phone,password,role}=req.body;
+    //const role="user";
     console.log(req.body);
     try{
         const existingUser=await User.findOne({$or :[{email},{phone}]});
