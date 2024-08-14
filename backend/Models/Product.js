@@ -26,7 +26,7 @@ const ProductDetailSchema = new mongoose.Schema({
       type:String,
       required:true  
     }],
-    rating:[{type:String}]
+    rating:{type:String}
 },{collection:"productInfo",});
 const Product =  mongoose.model("ProductInfo",ProductDetailSchema);
 module.exports=Product;

@@ -5,7 +5,7 @@ const{ AddProducts, FetchProducts, UpdateProducts, DeleteProducts }=require("../
 
 router.post('/Addproduct',AddProducts)
 router.get('/fetchproduct',FetchProducts)
-router.put('updateproduct',UpdateProducts)
-router.delete('deleteproduct',DeleteProducts)
+router.put('/updateproduct',UpdateProducts)
+router.delete('/deleteproduct',DeleteProducts)
 
 module.exports=router;
