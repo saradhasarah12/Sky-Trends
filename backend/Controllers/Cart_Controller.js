@@ -1,8 +1,6 @@
-
 const Cart = require("../Models/Cart");
 const Product = require("../Models/Product");
 
-// Add or Update Products in Cart
 module.exports.AddCartProducts = async (req, res) => {
     const { userId, products } = req.body;
 
@@ -10,29 +8,25 @@ module.exports.AddCartProducts = async (req, res) => {
         let cart = await Cart.findOne({ userId });
 
         if (cart) {
-            // Update existing cart
             for (const product of products) {
                 const { productId, quantity } = product;
                 let productInCart = cart.products.find(p => p.productId.toString() === productId);
 
                 if (productInCart) {
-                    productInCart.quantity += quantity; // Increase quantity
+                    productInCart.quantity += quantity;
                 } else {
-                    cart.products.push({ productId, quantity }); // Add new product
+                    cart.products.push({ productId, quantity });
                 }
             }
-
-            // Calculate total amount based on updated products
             cart.totalAmount = await calculateTotalAmount(cart.products);
+
         } else {
-            // Create new cart
             cart = new Cart({
                 userId,
                 products,
-                totalAmount: await calculateTotalAmount(products) // Calculate total amount
+                totalAmount: await calculateTotalAmount(products)
             });
         }
-
         await cart.save();
         return res.status(200).json({ message: "Cart updated successfully" });
     } catch (error) {
@@ -41,21 +35,17 @@ module.exports.AddCartProducts = async (req, res) => {
     }
 };
 
-// Remove Product from Cart
 module.exports.RemoveProductFromCart = async (req, res) => {
     const { userId, productId } = req.body;
-
     try {
         let cart = await Cart.findOne({ userId });
 
         if (cart) {
             cart.products = cart.products.filter(product => product.productId.toString() !== productId);
 
-            // If no products are left, delete the cart
             if (cart.products.length === 0) {
                 await Cart.deleteOne({ userId });
             } else {
-                // Recalculate total amount
                 cart.totalAmount = await calculateTotalAmount(cart.products);
                 await cart.save();
             }
@@ -75,7 +65,7 @@ const calculateTotalAmount = async (products) => {
     for (const product of products) {
         const productDetails = await Product.findById(product.productId);
         if (productDetails) {
-            totalAmount += productDetails.amount * product.quantity; // Assuming amount is the price of the product
+            totalAmount += productDetails.amount * product.quantity;
         }
     }
     return totalAmount;

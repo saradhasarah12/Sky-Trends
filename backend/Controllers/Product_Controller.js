@@ -78,25 +78,23 @@ module.exports.UpdateProducts=async(req,res)=>{
     }
 }
 
-module.exports.DeleteProducts=async(req,res)=>{
-    const{_id}=req.body;
+module.exports.DeleteProducts = async (req, res) => {
+    const { _id } = req.body;
     if (!_id) {
         return res.status(400).send({ status: "error", message: "Invalid id or missing id" });
     }
-    try{
-        const data=await Product.deleteOne({_id : _id});
-        if(data.deleteOne === 1){
-            return res.send({status:"ok", data:data})
+    try {
+        const data = await Product.deleteOne({ _id: _id });
+        if (data.deletedCount === 1) {
+            return res.send({ status: "ok", data: data });
+        } else {
+            return res.send({ status: "Failed", message: "File not found" });
         }
-        else{
-            return res.send({status:"Failed",message:"Server not found"})
-        }
-    }
-    catch(error){
+    } catch (error) {
         console.log(error);
-        return res.status(500).send({status:"error",message:"error occurred while deleting product"})
-        
+        return res.status(500).send({ status: "error", message: "Error occurred while deleting product" });
     }
-}
+};
+
 
 
