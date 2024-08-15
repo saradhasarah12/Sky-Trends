@@ -2,6 +2,8 @@ const express =require("express")
 const app = express();
 app.use(express.json())
 
+app.use('/uploads', express.static('uploads'));
+
 const mongoose=require("mongoose")
 
 const cors=require("cors")
@@ -20,6 +22,10 @@ app.listen(5000,()=> console.log("Server Started"));
 
 const userRoutes=require('./Routes/User_Routes');
 const productRoutes =require('./Routes/Product_Routes')
+const cartRoutes=require('./Routes/Cart_Routes')
+const bookingRoutes=require('./Routes/Booking_Routes');
 
 app.use('/users',userRoutes);
 app.use('/product',productRoutes)
+app.use('/cart',cartRoutes)
+app.use('/booking',bookingRoutes)

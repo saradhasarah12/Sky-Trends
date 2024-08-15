@@ -20,6 +20,6 @@ const BookingDetailsSchema=new mongoose.Schema({
         type:String,
         required:true
     }
-},{collation:"BookingInfo",});
+},{collection:"BookingInfo",});
 const Booking=mongoose.model("BookingInfo",BookingDetailsSchema);
-model.export=Booking;
+module.exports=Booking;

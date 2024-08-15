@@ -1,23 +1,52 @@
 const Product = require("../Models/Product");
-const { deleteOne } = require("../Models/User");
+const multer = require("multer");
+const path = require("path");
 
-module.exports.AddProducts=async(req,res)=>{
-    const {name,discription,amount,brand,image,category,rating}=req.body;
-    try{
-        const checkproductname= await Product.findOne({name})
-        if(checkproductname==null){
-            await Product.create({name,discription,amount,brand,image,category,rating})
-             return res.send({status:"ok"});
-        }
-        else{
-             return res.send({status:"error"});
-        }
+// Configure multer for image upload
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Specify the directory to store the uploaded files
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)); // Add a unique timestamp to the file name
     }
-    catch(error){
-        return res.send({send:"catch error",status:(500)})
-    }
-}
+});
 
+const upload = multer({ storage: storage });
+
+// Add Products with image upload
+module.exports.AddProducts = async (req, res) => {
+    const uploadImages = upload.array('images', 5); // Limit to 5 images
+
+    uploadImages(req, res, async function (err) {
+        if (err) {
+            return res.status(500).send({ message: "Error uploading images", error: err.message });
+        }
+
+        const { name, discription, amount, brand, category, rating } = req.body;
+        const imagePaths = req.files.map(file => ({ imageUrl: `/uploads/${file.filename}` }));
+
+        try {
+            const checkproductname = await Product.findOne({ name });
+            if (!checkproductname) {
+                await Product.create({
+                    name,
+                    discription,
+                    amount,
+                    brand,
+                    images: imagePaths,
+                    category,
+                    rating
+                });
+                return res.send({ status: "ok" });
+            } else {
+                return res.send({ status: "error", message: "Product already exists" });
+            }
+        } catch (error) {
+            return res.status(500).send({ status: "error", message: "Server error" });
+        }
+    });
+};
 module.exports.FetchProducts=async(req,res)=>{
     const {_id}=req.body;
     try{
