@@ -10,8 +10,8 @@ module.exports.AddCartProducts = async (req, res) => {
         if (cart) {
             for (const product of products) {
                 const { productId, quantity } = product;
-                let productInCart = cart.products.find(p => p.productId.toString() === productId);
-
+                let productInCart = cart.products.findOne(productId);
+                 
                 if (productInCart) {
                     productInCart.quantity += quantity;
                 } else {

@@ -32,8 +32,8 @@ module.exports.UserLogin= async(req,res)=>{
 
 //User Register
 module.exports.UserSignUp=async(req,res)=>{
-    var {email,phone,password,role}=req.body;
-    //const role="user";
+    var {email,phone,password}=req.body;
+    const role="user";
     console.log(req.body);
     try{
         const existingUser=await User.findOne({$or :[{email},{phone}]});
@@ -45,9 +45,10 @@ module.exports.UserSignUp=async(req,res)=>{
         const data =new User({email,phone,password,role});
         
         await data.save();
-        res.send({status:"ok"});
+        return res.send({status:"ok"});
     }
     catch(error){
-        res.status(500).send({status:"error",message:"An error occur during registration"})
+        return res.status(500).send({status:"error",message:"An error occur during registration"})
     }
 };
+
