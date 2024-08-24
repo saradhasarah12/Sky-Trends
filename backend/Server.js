@@ -25,7 +25,15 @@ const productRoutes =require('./Routes/Product_Routes')
 const cartRoutes=require('./Routes/Cart_Routes')
 const bookingRoutes=require('./Routes/Booking_Routes');
 
+
 app.use('/users',userRoutes);
 app.use('/product',productRoutes)
 app.use('/cart',cartRoutes)
 app.use('/booking',bookingRoutes)
+
+
+const {authenticateToken }=require('./Middleware/jwt')
+
+app.get('/protected-route',authenticateToken,(req,res)=>{
+    res.send('This is a protected route');
+});
