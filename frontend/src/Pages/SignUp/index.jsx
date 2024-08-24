@@ -3,6 +3,7 @@ import {toast , ToastContainer} from 'react-toastify'
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import 'react-toastify/dist/ReactToastify.css';
+import { svedio } from '../../assets';
 
 export default function SignUp() {
     const [email,setEmail]=useState('');
@@ -53,7 +54,7 @@ export default function SignUp() {
     };
   return (
     <>
-       <div className='flex flex-col md:flex-row items-center gap-10 justify-between w-full h-screen p-4'>
+       <div className='flex flex-col md:flex-row items-center gap-10 justify-between w-full h-screen'>
             <ToastContainer />
             <div className="form-box w-full md:w-1/3 flex flex-col items-end gap-10 p-4">
                 <form className="w-full max-w-sm p-6 bg-white rounded-lg shadow-lg" onSubmit={handleSubmit}>
@@ -112,6 +113,9 @@ export default function SignUp() {
 
             </form>
         </div>
+        <div className='img w-full md:w-2/3 flex justify-center'>
+                <video src={svedio} autoPlay loop muted alt="BikeLogin" className='w-full md:w-3/4 object-contain' />
+            </div>
        </div>
         
     </>
