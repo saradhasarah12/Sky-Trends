@@ -17,6 +17,7 @@ export default function SignUp() {
             toast.error("All Fields are required");
             return false;
         }
+
         const emailregex=/^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
         if(!emailregex.test(email)){
             toast.error("Invalid Email Format");
@@ -70,7 +71,7 @@ export default function SignUp() {
                         />
                     </div>
                     <div className="mb-4">
-                        <label className="block text-gray-700">Password</label>
+                        <label className="block text-gray-700">Phone</label>
                         <input
                             type="phone"
                             name="phone"

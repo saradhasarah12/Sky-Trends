@@ -1,54 +1,58 @@
-const User=require("../Models/User")
-// const Admin=require("../Models/Admin")
-const bcrypt =require("bcrypt")
+const User = require("../Models/User");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const JWT_SECRET = "supersecret";
 
-module.exports.UserLogin= async(req,res)=>{
-    const{uname,password}=req.body
-    console.log(uname);
-    console.log(req.body)
-    try{
-        let user=null;
-        let role=null;
+// User Login
+module.exports.UserLogin = async (req, res) => {
+    const { emailOrPhone, password } = req.body;
 
-        user=await User.findOne({ $or : [{email:uname},{phone:uname}]});
-        if(!user){
-            return res.json({error:"User Not Found"})
-        }
-
-        const valid=await bcrypt.compare(password,user.password);
-        if(valid){
-            return res.json({status:"ok",role:user.role,email:user.email})
-        }
+    try {
         
+        let user;
+        if (isNaN(emailOrPhone)){
+            user = await User.findOne({ email: emailOrPhone });
+        } 
         else{
-            return res.json({status:"error",error:"Invalid Password"})
+            user = await User.findOne({ phone: emailOrPhone });
         }
-    }
-    catch(error){
+        if (!user) {
+            return res.status(404).json({ status: "error", error: "User Not Found" });
+        }
+
+        const valid = await bcrypt.compare(password, user.password);
+        if (valid) {
+            const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: "1h" });
+            return res.json({ status: "ok", role: user.role, email: user.email, token: token });
+        } else {
+            return res.status(400).json({ status: "error", error: "Invalid Password" });
+        }
+    } catch (error) {
         console.log(error);
-        res.status(500).json({status:"error",error:"Internal Server Error"});
+        res.status(500).json({ status: "error", error: "Internal Server Error" });
     }
 };
 
-//User Register
-module.exports.UserSignUp=async(req,res)=>{
-    var {email,phone,password}=req.body;
-    const role="user";
+
+// User Register
+module.exports.UserSignUp = async (req, res) => {
+    const { email, phone, password } = req.body;
+    const role = "user";
     console.log(req.body);
-    try{
-        const existingUser=await User.findOne({$or :[{email},{phone}]});
-        if(existingUser){
-            return res.status(400).send({status:"error",message:"User alredy existing with this email or phone"})
+
+    try {
+        const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
+        if (existingUser) {
+            return res.status(400).json({ status: "error", message: "User already exists with this email or phone" });
         }
-        password=await bcrypt.hash(password,13);
-        
-        const data =new User({email,phone,password,role});
-        
-        await data.save();
-        return res.send({status:"ok"});
-    }
-    catch(error){
-        return res.status(500).send({status:"error",message:"An error occur during registration"})
+
+        const hashedPassword = await bcrypt.hash(password, 13);
+        const newUser = new User({ email, phone, password: hashedPassword, role });
+
+        await newUser.save();
+        return res.json({ status: "ok", message: "User registered successfully" });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ status: "error", message: "An error occurred during registration" });
     }
 };
-
