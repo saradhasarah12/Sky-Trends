@@ -8,14 +8,14 @@ module.exports.UserLogin = async (req, res) => {
     const { emailOrPhone, password } = req.body;
 
     try {
-        
         let user;
-        if (isNaN(emailOrPhone)){
+        // Determine if input is an email or a phone number
+        if (isNaN(emailOrPhone)) {
             user = await User.findOne({ email: emailOrPhone });
-        } 
-        else{
+        } else {
             user = await User.findOne({ phone: emailOrPhone });
         }
+
         if (!user) {
             return res.status(404).json({ status: "error", error: "User Not Found" });
         }
@@ -32,8 +32,6 @@ module.exports.UserLogin = async (req, res) => {
         res.status(500).json({ status: "error", error: "Internal Server Error" });
     }
 };
-
-
 // User Register
 module.exports.UserSignUp = async (req, res) => {
     const { email, phone, password } = req.body;

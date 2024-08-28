@@ -6,18 +6,18 @@ import 'react-toastify/dist/ReactToastify.css';
 import { svedio } from '../../assets';
 
 export default function Login() {
-    const [email, setEmail] = useState('');
+    const [emailOrPhone, setEmailOrPhone] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
     const validation = () => {
-        if (!email || !password) {
+        if (!emailOrPhone || !password) {
             toast.error("All Fields are required");
             return false;
         }
 
         const emailregex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailregex.test(email)) {
+        if (isNaN(emailOrPhone) && !emailregex.test(emailOrPhone)) {
             toast.error("Invalid Email Format");
             return false;
         }
@@ -29,7 +29,7 @@ export default function Login() {
         e.preventDefault();
         if (!validation()) return;
         try {
-            const response = await axios.post("http://localhost:5000/users/login", { emailOrPhone: email, password });
+            const response = await axios.post("http://localhost:5000/users/login", { emailOrPhone, password });
             if (response.data.status === "ok") {
                 toast.success("Login Successful!");
                 navigate('/dashboard'); // Redirect to dashboard or home after successful login
@@ -41,7 +41,6 @@ export default function Login() {
             toast.error("An error occurred during login.");
         }
     };
-
     return (
         <>
             <div className='flex flex-col md:flex-row items-center gap-10 justify-between w-full h-screen'>
@@ -55,10 +54,10 @@ export default function Login() {
                         <div className="mb-4">
                             <label className="block text-gray-700">Email or Phone</label>
                             <input
-                                type="email"
-                                name="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                type="text" // Changed to "text" to accept both email and phone
+                                name="emailOrPhone"
+                                value={emailOrPhone}
+                                onChange={(e) => setEmailOrPhone(e.target.value)}
                                 className="w-full p-2 border rounded-lg"
                             />
                         </div>
