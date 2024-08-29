@@ -1,38 +1,41 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
 import { svedio } from '../../assets';
+import { RoleContext } from '../../Context/RoleContext';
+
 
 export default function Login() {
-    const [emailOrPhone, setEmailOrPhone] = useState('');
+    const [email, setEmailOrPhone] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    // const {setRole}=useContext(RoleContext)
+    
 
     const validation = () => {
-        if (!emailOrPhone || !password) {
+        if (!email || !password) {
             toast.error("All Fields are required");
             return false;
         }
-
-        const emailregex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (isNaN(emailOrPhone) && !emailregex.test(emailOrPhone)) {
-            toast.error("Invalid Email Format");
-            return false;
-        }
-
-        return true;
+      return true;
     }
 
-    const handleSubmit = async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
+        setLoading(true);
         if (!validation()) return;
         try {
-            const response = await axios.post("http://localhost:5000/users/login", { emailOrPhone, password });
+            const response = await axios.post("http://localhost:5000/users/login", { email, password });
             if (response.data.status === "ok") {
-                toast.success("Login Successful!");
-                navigate('/dashboard'); // Redirect to dashboard or home after successful login
+              localStorage.setItem('token',response.data.token);
+              localStorage.setItem('role',response.data.role);
+              localStorage.setItem('email',response.data.email);
+            //   setRole(response.data.role)
+              toast.success("Login Successful!");
+              navigate('/'); 
             } else {
                 toast.error(response.data.error || "Login failed");
             }
@@ -40,10 +43,17 @@ export default function Login() {
             console.log(error);
             toast.error("An error occurred during login.");
         }
+        setLoading(false)
     };
+    const handleSubmit=(e)=>{
+      e.preventDefault();
+      if(validation()){
+        handleLogin(e);
+      }
+    }
     return (
         <>
-            <div className='flex flex-col md:flex-row items-center gap-10 justify-between w-full h-screen'>
+            <div className='flex flex-col md:flex-row items-center gap-10 justify-between w-full h-screen p-5'>
                 <ToastContainer />
                 <div className='img w-full md:w-2/3 flex justify-center'>
                     <video src={svedio} autoPlay loop muted alt="BikeLogin" className='w-full md:w-3/4 object-contain' />
@@ -54,9 +64,9 @@ export default function Login() {
                         <div className="mb-4">
                             <label className="block text-gray-700">Email or Phone</label>
                             <input
-                                type="text" // Changed to "text" to accept both email and phone
-                                name="emailOrPhone"
-                                value={emailOrPhone}
+                                type="text" 
+                                name="email"
+                                value={email}
                                 onChange={(e) => setEmailOrPhone(e.target.value)}
                                 className="w-full p-2 border rounded-lg"
                             />

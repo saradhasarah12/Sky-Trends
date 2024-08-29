@@ -5,15 +5,15 @@ const JWT_SECRET = "supersecret";
 
 // User Login
 module.exports.UserLogin = async (req, res) => {
-    const { emailOrPhone, password } = req.body;
+    const { email, password } = req.body;
 
     try {
         let user;
         // Determine if input is an email or a phone number
-        if (isNaN(emailOrPhone)) {
-            user = await User.findOne({ email: emailOrPhone });
+        if (isNaN(email)) {
+            user = await User.findOne({ email: email });
         } else {
-            user = await User.findOne({ phone: emailOrPhone });
+            user = await User.findOne({ phone: email });
         }
 
         if (!user) {

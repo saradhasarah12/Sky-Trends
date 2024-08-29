@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter , Routes, Route } from 'react-router-dom';
 import SignUp from './Pages/SignUp';
 import Login from './Pages/Login';
 import NotFound from './Pages/NotFound'
@@ -19,7 +19,7 @@ function App() {
     
    <>
     <RoleContext.Provider value={{role,setRole}}/>
-      <Router>
+      <BrowserRouter>
         <Routes>
           <Route path="/signup"element={<SignUp/>}/>
           <Route path="/login"element={<Login/>}/>
@@ -35,15 +35,14 @@ function App() {
             key={index}
             path={route.path}
             element={
-              
                 route.element
             }
           />
         ))}
         
         <Route path="*" element={<NotFound/>} />
-        </Routes>
-      </Router>
+      </Routes>
+    </BrowserRouter>
     <RoleContext.Provider/>  
    </>
   );
